@@ -391,9 +391,6 @@
             image_pub_.publish(img_msg);
 
             size_t num_boxes = bbox_msg.bbox_xyxy.size() / 4;
-            for (size_t i = 0; i < num_boxes; ++i) {
-                if (bbox_msg.bbox_conf[i]<min_bbox_confi_) num_boxes--;
-            }
             target_dist_calculator::DetectOut out_msg;
             out_msg.classes.resize(num_boxes);
             out_msg.global_poses.resize(num_boxes);
@@ -406,14 +403,16 @@
             pcl::PointCloud<pcl::PointXYZ>::Ptr clu_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
             for (size_t i = 0; i < num_boxes; ++i) {
-                if (bbox_msg.bbox_conf[i]<min_bbox_confi_) continue;
                 // 解析边界框的坐标
                 float x1 = bbox_msg.bbox_xyxy[4 * i];
                 float y1 = bbox_msg.bbox_xyxy[4 * i + 1];
                 float x2 = bbox_msg.bbox_xyxy[4 * i + 2];
                 float y2 = bbox_msg.bbox_xyxy[4 * i + 3];
+                // 用框的上沿
                 float center_x = (x1 + x2) / 2.0f;
-                float center_y = (y1 + y2) / 2.0f;
+                float center_y = y1;
+                // float center_x = (x1 + x2) / 2.0f;
+                // float center_y = (y1 + y2) / 2.0f;
                 // std::cout<<"bbox_msg confi"<<bbox_msg.bbox_conf[i]<<std::endl;
                 // Convert image coordinates to camera coordinates (后续优化考虑畸变参数的)
                 float center_x_camera = (center_x - camera_matrix_.at<double>(0, 2)) / camera_matrix_.at<double>(0, 0);

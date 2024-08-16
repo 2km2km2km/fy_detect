@@ -1,7 +1,7 @@
 <launch>
     <!-- <arg name="model_path" default="/home/detect_ws/807_best1.pt" /> -->
     <arg name="model_path" default="/home/detect_ws/yolov8n.pt" />
-    <arg name="bbox_conf_thre" default="0.6" />
+    <arg name="bbox_conf_thre" default="0.7" />
     <arg name="save_img" default="True" />
     <arg name="save_frequency" default="1" />
     <arg name="raw_img" default="True" />
