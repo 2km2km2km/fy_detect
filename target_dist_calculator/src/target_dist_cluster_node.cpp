@@ -794,7 +794,7 @@
         pthread_setaffinity_np(current_thread, sizeof(cpu_set_t), &cpuset);
     }
     int main(int argc, char** argv) {
-        set_affinity(0);
+        set_affinity(3);
         ros::init(argc, argv, "target_distance_cluster_calculator");
         ros::NodeHandle nh("~");
         TargetDistanceCalculator tdc(nh);
