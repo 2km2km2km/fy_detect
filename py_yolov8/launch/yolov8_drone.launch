@@ -1,6 +1,6 @@
 <launch>
     <!-- <arg name="model_path" default="/home/detect_ws/807_best1.pt" /> -->
-    <arg name="model_path" default="/home/detect_ws/py_yolov8/weights/821best.pt" />
+    <arg name="model_path" default="/home/detect_ws/src/py_yolov8/weights/821best.pt" />
     <arg name="bbox_conf_thre" default="0.7" />
     <arg name="save_img" default="True" />
     <arg name="save_frequency" default="1" />

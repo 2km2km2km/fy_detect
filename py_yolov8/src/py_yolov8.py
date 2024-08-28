@@ -214,26 +214,26 @@ def process_batch(coco_person_only=False):
             publishers[topic]['bbox'].publish(bbox_msg)
 
 
-        # Publish the annotated image
-        try:
-            if publish_raw:
-                header = Header()
-                header.stamp = rospy.Time.now()
-                annotated_image_msg = bridge.cv2_to_imgmsg(annotated_frame, "bgr8")
-                annotated_image_msg.header = header
-                publishers[topic]['image'].publish(annotated_image_msg)
-            # if publish_compressed:
-            #     start_time = time.time()
-            #     # compressed_image = compress_image(annotated_frame)
-            #     # compressed_image_msg = bridge.cv2_to_imgmsg(compressed_image, "bgr8")
-            #     compressed_image_msg = bridge.cv2_to_compressed_imgmsg(annotated_frame, dst_format='jpg')
-            #     compressed_image_msg.header = header
-            #     publishers[topic]['compressed_image'].publish(compressed_image_msg)
-            #     end_time = time.time()
-            #     total_time = end_time - start_time
-            #     rospy.loginfo("Compress time: %f", total_time)
-        except CvBridgeError as e:
-            rospy.logerr(e)
+            # Publish the annotated image
+            try:
+                if publish_raw:
+                    header = Header()
+                    header.stamp = rospy.Time.now()
+                    annotated_image_msg = bridge.cv2_to_imgmsg(annotated_frame, "bgr8")
+                    annotated_image_msg.header = header
+                    publishers[topic]['image'].publish(annotated_image_msg)
+                # if publish_compressed:
+                #     start_time = time.time()
+                #     # compressed_image = compress_image(annotated_frame)
+                #     # compressed_image_msg = bridge.cv2_to_imgmsg(compressed_image, "bgr8")
+                #     compressed_image_msg = bridge.cv2_to_compressed_imgmsg(annotated_frame, dst_format='jpg')
+                #     compressed_image_msg.header = header
+                #     publishers[topic]['compressed_image'].publish(compressed_image_msg)
+                #     end_time = time.time()
+                #     total_time = end_time - start_time
+                #     rospy.loginfo("Compress time: %f", total_time)
+            except CvBridgeError as e:
+                rospy.logerr(e)
 
     if new_detection:
         img_save = cv2.hconcat(to_caozuoduan)

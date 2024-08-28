@@ -104,6 +104,11 @@
             target_pubs_coord_world_.push_back(nh_.advertise<sensor_msgs::PointCloud2>("/detection/target_coordinates/drone", 1000));
             target_pubs_coord_world_.push_back(nh_.advertise<sensor_msgs::PointCloud2>("/detection/target_coordinates/box", 1000));
 
+            received_img_["CAM_A"] = false;
+            received_img_["CAM_B"] = false;
+            received_img_["CAM_C"] = false;
+            received_img_["CAM_D"] = false;
+            
             target_pub_bearing_camera_ = nh_.advertise<geometry_msgs::Point>("/detection/target_bearing", 10);
 
             cam_line_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("line_segment_point_cloud", 10);
@@ -141,8 +146,8 @@
         map<string, string> img_topic_;
         map<string, string> bbox_topic_;
 
-        bool received_bbox_ = false;
-        bool received_img_ = false;
+        map<string, bool> received_img_;
+        // bool received_img_ = false;
         bool got_lidar_ = false;
         deque<sensor_msgs::PointCloud2> point_cloud_cache_;
         deque<nav_msgs::Odometry> odometry_cache_;
@@ -714,7 +719,13 @@
                 out_msg.header.stamp = bbox_msg.header.stamp;
                 out_msg.header.frame_id = "body";
                 cv_bridge::CvImagePtr cv_ptr(new cv_bridge::CvImage);
-                cv_ptr->image = images_[camera];
+                // std::cout << "Original Image resolution: " << images_[camera].cols << " x " << images_[camera].rows << std::endl;
+                // 设定新的分辨率（例如，降低为原始分辨率的半）
+                cv::Size new_size(images_[camera].cols / 2, images_[camera].rows / 2);
+                cv::Mat resized_image;
+                cv::resize(images_[camera], resized_image, new_size);
+
+                cv_ptr->image = resized_image;
                 cv_ptr->encoding = sensor_msgs::image_encodings::BGR8;
                 sensor_msgs::Image ros_image;
                 cv_ptr->toImageMsg(ros_image);
@@ -753,18 +764,16 @@
                 return;
             }
             images_[camera] = cv_ptr->image;
-            received_img_ = true;
+            received_img_[camera]  = true;
         }
 
         void bboxCallback(const custom_msgs::BoundingBoxArrayConstPtr& msg, const string& camera) {
             // std::cout<<"receive bbox"<<std::endl;
             // 目标框回调函数
             bboxes_[camera] = *msg;
-            received_bbox_ = true;
-            if (received_img_ && received_bbox_) {
+            if (received_img_[camera]) {
                 // 处理图像和目标框
-                received_img_ = false;
-                received_bbox_ = false;
+                received_img_[camera] = false;
                 calculate_depth_and_position(camera);
             }
         }

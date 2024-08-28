@@ -17,8 +17,8 @@
         <param name="person_heidht" value="1.7" />
         <param name="width_rate" value="376.824" />
         <param name="height_rate" value="377.400" />
-        <!-- <param name="config_path" value="$(find target_dist_calculator)/config/mid_drone.yaml"/> -->
-        <param name="config_path" value="$(find target_dist_calculator)/config/mid_rs_drone.yaml"/>
+        <param name="config_path" value="$(find target_dist_calculator)/config/mid_drone.yaml"/>
+        <!-- <param name="config_path" value="$(find target_dist_calculator)/config/mid_rs_drone.yaml"/> -->
         <param name="czd_save_path" value="$(find py_yolov8)/src/to_czd/coord.txt"/>
         <param name="pc_topic" value="/cloud_registered_body"/>
         <param name="czd_img_save_path" value="$(find py_yolov8)/src/to_czd/img.jpg"/>

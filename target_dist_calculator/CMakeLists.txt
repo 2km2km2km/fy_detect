@@ -121,3 +121,9 @@ target_link_libraries(odom_trans
 install(TARGETS odom_trans
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+add_executable(image_splitter_node src/image_splitter_node.cpp)
+
+target_link_libraries(image_splitter_node
+  ${catkin_LIBRARIES}
+)
