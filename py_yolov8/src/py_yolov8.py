@@ -116,16 +116,16 @@ def process_batch(coco_person_only=False):
     
     start_time = time.time()
     # Perform batch inference
-    print(images[0].shape)
-    print("start infer")
+    # print(images[0].shape)
+    # print("start infer")
     results = model(images, verbose=False)
     # model = YOLO("yolov8n.pt")
     # results = model(image_array)
     
-    print("over infer")  
+    # print("over infer")  
     end_time = time.time()
     total_time = end_time - start_time
-    print("total_time: ",total_time)
+    # print("total_time: ",total_time)
     
     # rospy.loginfo("Detection time: %f", total_time)
     

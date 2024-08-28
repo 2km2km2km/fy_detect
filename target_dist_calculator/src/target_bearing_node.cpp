@@ -226,31 +226,35 @@
             size_t num_boxes = bbox_msg.bbox_xyxy.size() / 4;
 
             for (size_t i = 0; i < num_boxes; ++i) {
-                // 解析边界框的坐标
-                float x1 = bbox_msg.bbox_xyxy[4 * i];
-                float y1 = bbox_msg.bbox_xyxy[4 * i + 1];
-                float x2 = bbox_msg.bbox_xyxy[4 * i + 2];
-                float y2 = bbox_msg.bbox_xyxy[4 * i + 3];
-                float center_x = (x1 + x2) / 2.0f;
-                float center_y = (y1 + y2) / 2.0f;
+                // only drone
+                if (bbox_msg.bbox_cls[i] == 0) {
+                    // 解析边界框的坐标
+                    float x1 = bbox_msg.bbox_xyxy[4 * i];
+                    float y1 = bbox_msg.bbox_xyxy[4 * i + 1];
+                    float x2 = bbox_msg.bbox_xyxy[4 * i + 2];
+                    float y2 = bbox_msg.bbox_xyxy[4 * i + 3];
+                    float center_x = (x1 + x2) / 2.0f;
+                    float center_y = (y1 + y2) / 2.0f;
 
-                // Convert image coordinates to camera coordinates (后续优化考虑畸变参数的)
-                float center_x_camera = (center_x - camera_matrix_.at<double>(0, 2)) / camera_matrix_.at<double>(0, 0);
-                float center_y_camera = (center_y - camera_matrix_.at<double>(1, 2)) / camera_matrix_.at<double>(1, 1);
-                // std::cout<<"center_x_camera "<<center_x_camera<<" center_y_camera "<<center_y_camera<<std::endl;
-                Eigen::Vector3d camera_origin_point = translation_vector_[camera];
-                Eigen::Vector3d end_point_camera(center_x_camera, center_y_camera, 1.0);
-                Eigen::Vector3d end_point_body = rotation_matrix_[camera] * end_point_camera + camera_origin_point; // camera to body frame
-                Eigen::Vector3d bearing_camera = (end_point_body - camera_origin_point).normalized();
-                std::array<Eigen::Vector3d, 2> line = {camera_origin_point, bearing_camera};
-                // publish_target_bearing(bearing_camera);
-                geometry_msgs::Point cam_bearing;
-                cam_bearing.x = bearing_camera[0];
-                cam_bearing.y = bearing_camera[1];
-                cam_bearing.z = bearing_camera[2];
-                target_pub_bearing_camera_.publish(cam_bearing);
-                std::cout<<"bearing "<<bearing_camera[0]<<" "<<bearing_camera[1]<<" "<<bearing_camera[2]<<std::endl;
-                ros::Duration(0.01).sleep();
+                    // Convert image coordinates to camera coordinates (后续优化考虑畸变参数的)
+                    float center_x_camera = (center_x - camera_matrix_.at<double>(0, 2)) / camera_matrix_.at<double>(0, 0);
+                    float center_y_camera = (center_y - camera_matrix_.at<double>(1, 2)) / camera_matrix_.at<double>(1, 1);
+                    // std::cout<<"center_x_camera "<<center_x_camera<<" center_y_camera "<<center_y_camera<<std::endl;
+                    Eigen::Vector3d camera_origin_point = translation_vector_[camera];
+                    Eigen::Vector3d end_point_camera(center_x_camera, center_y_camera, 1.0);
+                    Eigen::Vector3d end_point_body = rotation_matrix_[camera] * end_point_camera + camera_origin_point; // camera to body frame
+                    Eigen::Vector3d bearing_camera = (end_point_body - camera_origin_point).normalized();
+                    std::array<Eigen::Vector3d, 2> line = {camera_origin_point, bearing_camera};
+                    // publish_target_bearing(bearing_camera);
+                    geometry_msgs::Point cam_bearing;
+                    cam_bearing.x = bearing_camera[0];
+                    cam_bearing.y = bearing_camera[1];
+                    cam_bearing.z = bearing_camera[2];
+                    target_pub_bearing_camera_.publish(cam_bearing);
+                    std::cout<<"bearing "<<bearing_camera[0]<<" "<<bearing_camera[1]<<" "<<bearing_camera[2]<<std::endl;
+                    ros::Duration(0.01).sleep();
+                }
+
             }
 
             // 保存操作端需要的图片

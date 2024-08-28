@@ -460,7 +460,7 @@
                 bbox_cloud->width = static_cast<uint32_t>(bbox_cloud->points.size());
                 bbox_cloud->height = 1;  // 由于是稀疏点云，设置为1行
                 bbox_cloud->is_dense = false;  // 点云不是稠密的
-                std::cout<<"bbox_cloud->points.size() "<<bbox_cloud->points.size()<<std::endl;
+                // std::cout<<"bbox_cloud->points.size() "<<bbox_cloud->points.size()<<std::endl;
                 std::vector<pcl::PointIndices> cluster_indices;
                 double depth;
                 Eigen::Vector3d closest_point;
@@ -498,7 +498,7 @@
                         double min_depth = std::numeric_limits<double>::infinity();
                         int best_cluster_id = -1; 
                         for (const auto& indices : cluster_indices) {
-                            std::cout<<"cluster_id "<<cluster_id<<" size "<<indices.indices.size()<<std::endl;
+                            // std::cout<<"cluster_id "<<cluster_id<<" size "<<indices.indices.size()<<std::endl;
                             // cv::Vec3b color = cluster_colors[cluster_id % cluster_colors.size()];  // 选择颜色
                             Eigen::Vector3d centroid(0, 0, 0);
                             // 遍历聚类中的每个点
@@ -596,7 +596,7 @@
                             
                             // publish_cam_line(line[0], line[1], lidar_time);
                             depth = closest_point.norm();
-                            std::cout<<"depth1 "<<depth<<std::endl;
+                            // std::cout<<"depth1 "<<depth<<std::endl;
                         }
                         else {
                             depth = std::numeric_limits<double>::infinity();
@@ -609,7 +609,7 @@
                     // 使用深度加延长来确认位置
                     closest_point = camera_origin_point + depth * bearing_camera;
                     Eigen::Vector3d closest_point_world = transformPoint(closest_point, odom_msg);
-                    ROS_INFO("Use lidar Camera: %s, Depth: %.2f m, 3D Position in World: (%.2f, %.2f, %.2f)",
+                    ROS_INFO_THROTTLE(2.0, "Use lidar Camera: %s, Depth: %.2f m, 3D Position in World: (%.2f, %.2f, %.2f)",
                             camera.c_str(), depth, closest_point_world(0), closest_point_world(1), closest_point_world(2));
                     // std::cout<<(x2-x1)<<" "<<(y2-y1)<<" "<<depth<<std::endl;
                     out_msg.classes[i] = bbox_msg.bbox_cls[i];
@@ -653,9 +653,9 @@
                     closest_point = camera_origin_point +  depth*bearing_camera;
 
 
-                    std::cout<<"person_height_ "<<person_height_<<std::endl;
+                    ROS_INFO_THROTTLE(2.0, "person_height_: %.2f ", person_height_);
                     Eigen::Vector3d closest_point_world2 = transformPoint(closest_point, odom_msg);
-                    ROS_INFO("Use camera Camera: %s, Depth: %.2f m, 3D Position in World: (%.2f, %.2f, %.2f)",
+                    ROS_INFO_THROTTLE(2.0, "Use camera Camera: %s, Depth: %.2f m, 3D Position in World: (%.2f, %.2f, %.2f)",
                             camera.c_str(), depth, closest_point_world2(0), closest_point_world2(1), closest_point_world2(2));
                     out_msg.classes[i] = bbox_msg.bbox_cls[i];
                     out_msg.global_poses[i].x = closest_point_world2(0);
@@ -723,7 +723,7 @@
                 out_info_pub_.publish(out_msg);
 
                 static ros::Time last_call_back_time = ros::Time::now();
-                ROS_WARN_STREAM("call_back_time : " << (ros::Time::now() - last_call_back_time).toSec());
+                // ROS_WARN_STREAM("call_back_time : " << (ros::Time::now() - last_call_back_time).toSec());
                 last_call_back_time = ros::Time::now();
             }
 
@@ -737,7 +737,7 @@
             // 计算函数计算时间
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> duration = end - start;
-            std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
+            // std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
 
         }
         
